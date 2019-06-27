@@ -1,0 +1,109 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>jarweb-jen-ans</groupId>
+  <artifactId>jarweb-jen-ans</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0.0</version>
+  <description>Jenkins打包Docker通过Ansible直接运行的项目</description>
+  
+  <!-- Spring boot 版本 -->
+   <parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.1.0.RELEASE</version>
+  </parent>
+  <!-- Spring boot 版本 -->
+  
+   <!-- 配置编码格式  begin -->
+  <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+  </properties>
+  <!-- 配置编码格式  end -->
+  
+  
+  <!-- JAR包配置  begin-->
+  <dependencies>
+ 		<!-- SpringBoot web用到的JAR -->
+	    <dependency>
+	    	<groupId>org.springframework.boot</groupId>
+	    	<artifactId>spring-boot-starter-web</artifactId>
+  		</dependency>
+  		<!-- Springboot与页面交互（thymeleaf工具） -->
+  		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency> 
+	  	<!-- JUnit单元测试工具 -->
+	    <dependency>
+	      <groupId>junit</groupId>
+	      <artifactId>junit</artifactId>
+	      <scope>test</scope>
+	    </dependency>
+	    <!-- 日志输出 jar -->
+	    <dependency>
+    		<groupId>org.projectlombok</groupId>
+    		<artifactId>lombok</artifactId>
+    	</dependency>
+  </dependencies>
+  <!-- JAR包配置  end-->
+  
+  
+  
+   <!-- 插件配置  begin -->
+  <build>
+    <finalName>jarweb-jen-ans</finalName>
+    <plugins>
+  
+    	<!-- 添加打包插件-->
+    	 <plugin>
+             <groupId>org.springframework.boot</groupId>
+             <artifactId>spring-boot-maven-plugin</artifactId>
+         </plugin>
+		 <!--设置jar的入口类-->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <configuration>
+                <archive>
+                   <manifest>
+                       <addClasspath>true</addClasspath>
+                       <classpathPrefix>lib/</classpathPrefix>
+                        <mainClass>com.esq.WebJenAnsApplication</mainClass>
+                    </manifest>
+                </archive>
+            </configuration>
+         </plugin>
+		<!--把附属的jar打到jar内部的lib目录中-->
+        <plugin>
+             <groupId>org.apache.maven.plugins</groupId>
+             <artifactId>maven-dependency-plugin</artifactId>
+             <executions>
+             <execution>
+                <id>copy-dependencies</id>
+                <phase>package</phase>
+                <goals>
+                    <goal>copy-dependencies</goal>
+                </goals>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                </configuration>
+               </execution>
+             </executions>
+         </plugin>
+		<!--打包过程忽略Junit测试-->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+               <skip>true</skip>
+            </configuration>
+         </plugin>
+    	
+    </plugins>
+  </build>
+   <!-- 插件配置  end -->
+   
+</project>
